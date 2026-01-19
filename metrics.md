@@ -1,15 +1,15 @@
-# Training Metrics and Observations
+# Training Metrics
 
 ## What I Tried
 
-I implemented a simple CNN architecture for FashionMNIST classification with a custom `LearnedAffine` layer inserted after the first fully connected layer. The model uses two convolutional blocks with ReLU activations and max pooling, followed by dropout for regularization. The custom affine layer learns element-wise scale and shift parameters, adding 256 trainable parameters (128 for scale, 128 for shift).
+I built a simple CNN for FashionMNIST with a custom `LearnedAffine` layer that learns scale and shift parameters (256 total params). The model has two convolutional blocks with max pooling, then fully connected layers with the custom affine layer in between.
 
-For optimization, I used AdamW with a base learning rate of 0.001, which includes weight decay for better generalization. The OneCycleLR scheduler was employed to dynamically adjust the learning rate throughout training, ramping up to 10x the base rate and then annealing back down. This helps escape local minima early while fine-tuning later.
+I used AdamW optimizer (lr=0.001) for weight decay and OneCycleLR scheduler to ramp up to 10x learning rate then anneal down over training. This helps escape local minima early and fine-tune later.
 
 ## What Worked
 
-The training converged smoothly over 3 epochs, achieving approximately 88-90% test accuracy. The OneCycleLR scheduler proved effective, showing steady improvement each epoch without oscillation. The custom `LearnedAffine` layer integrated seamlessly and contributed to the model's representational capacity. Dropout layers (25% for conv, 50% for FC) prevented overfitting effectively.
+Training converged smoothly over 3 epochs, reaching around 88-90% test accuracy. The OneCycleLR scheduler worked well with steady improvement each epoch. The custom `LearnedAffine` layer integrated easily and added useful learnable parameters without overfitting.
 
 ## What I'd Change Next
 
-To improve performance, I would train for more epochs (10-15) to reach the typical 91-93% accuracy ceiling for this architecture. Experimenting with data augmentation (random rotations, translations) could improve generalization. I'd also try different scheduler strategies like CosineAnnealingLR for smoother convergence, and potentially use a lower dropout rate for the fully connected layer (0.3-0.4) to retain more information while still regularizing.
+To improve performance, I'd train longer (10-15 epochs) to reach 91-93% accuracy. Adding data augmentation like random rotations and shifts would help generalization. I'd also try CosineAnnealingLR for smoother convergence, and experiment with batch normalization instead of the custom affine layer to compare performance.
